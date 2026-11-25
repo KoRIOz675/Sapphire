@@ -1,6 +1,6 @@
 [package]
 name = "sapphire-crm"
-version = "0.1.0"
+version = "1.0.0"
 description = "CRM desktop application"
 authors = ["NBI Project"]
 license = "Apache-2.0"
