@@ -1,0 +1,126 @@
+@import 'tailwindcss';
+
+@plugin '@tailwindcss/typography';
+
+@theme {
+  --color-sapphire-50: oklch(96.9% 0.016 293.8);
+  --color-sapphire-100: oklch(94.3% 0.028 294.6);
+  --color-sapphire-200: oklch(89.4% 0.055 293.3);
+  --color-sapphire-300: oklch(81.1% 0.101 293.6);
+  --color-sapphire-400: oklch(70.9% 0.159 293.5);
+  --color-sapphire-500: oklch(60.6% 0.219 292.7);
+  --color-sapphire-600: oklch(54.1% 0.247 293);
+  --color-sapphire-700: oklch(49.1% 0.241 292.6);
+  --color-sapphire-800: oklch(43.2% 0.211 292.8);
+  --color-sapphire-900: oklch(38% 0.178 293.7);
+  --color-sapphire-950: oklch(28.3% 0.135 291.1);
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+/* Tailwind v4 dropped the pointer cursor on buttons; keep v3's behaviour. */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@utility btn {
+  @apply inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors;
+}
+
+@utility btn-primary {
+  @apply btn bg-sapphire-600 text-white hover:bg-sapphire-700 disabled:opacity-50;
+}
+
+@utility btn-secondary {
+  @apply btn border border-sapphire-300 bg-white text-sapphire-700 hover:bg-sapphire-100;
+}
+
+@utility btn-danger {
+  @apply btn border border-red-300 bg-white text-red-700 hover:bg-red-50;
+}
+
+@utility input {
+  @apply w-full rounded-md border border-sapphire-300 px-3 py-2 text-sm shadow-xs focus:border-sapphire-500 focus:ring-1 focus:ring-sapphire-500;
+}
+
+@utility label {
+  @apply mb-1 block text-sm font-medium text-sapphire-700;
+}
+
+@utility card {
+  @apply rounded-lg border border-sapphire-300 bg-white p-4 shadow-xs;
+}
+
+@utility badge {
+  @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+    overscroll-behavior: none;
+  }
+  body {
+    @apply bg-sapphire-50 text-sapphire-900 antialiased;
+  }
+}
+
+@layer utilities {
+  /* TipTap editor styles */
+  .tiptap p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: #94a3b8;
+    pointer-events: none;
+    height: 0;
+  }
+
+  .tiptap table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+  .tiptap td,
+  .tiptap th {
+    border: 1px solid #cbd5e1;
+    padding: 4px 8px;
+    text-align: left;
+    vertical-align: top;
+  }
+  .tiptap th {
+    background: #f1f5f9;
+    font-weight: 600;
+  }
+  .tiptap .selectedCell {
+    background: #e0e7ff;
+  }
+}
+
+/* ── Markdown editor (TipTap ProseMirror) ──────────────────────────────────── */
+.markdown-editor-content .ProseMirror {
+  outline: none;
+  padding: 0.75rem 1rem;
+  min-height: inherit;
+  cursor: text;
+}

@@ -1,0 +1,44 @@
+# Weekly version updates. Patch and minor updates are grouped into one PR per
+# ecosystem; major updates get their own PR. Security updates are separate and
+# arrive as soon as an advisory is published.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      npm-minor-and-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: cargo
+    directory: /src-tauri
+    schedule:
+      interval: weekly
+      day: monday
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      cargo-minor-and-patch:
+        update-types: [minor, patch]
+    ignore:
+      # rfd must stay on the version tauri-plugin-dialog uses (see
+      # src-tauri/Cargo.toml); it moves when the plugin does.
+      - dependency-name: rfd
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+
+  # Actions are pinned to commit SHAs; Dependabot updates the SHA and the
+  # version comment together.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    commit-message:
+      prefix: "ci"
+    groups:
+      actions-minor-and-patch:
+        update-types: [minor, patch]

@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sapphire CRM</title>
+  <style>
+    /* ── Splash screen ───────────────────────────────────────────────── */
+    #splash {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: oklch(96.9% 0.016 293.8); /* sapphire-50 */
+      z-index: 9999;
+      transition: opacity 0.6s ease;
+    }
+    #splash.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Logo Container: Elegant floating motion with dynamic shadow */
+    #splash-logo {
+      width: 130px;
+      height: 130px;
+      overflow: visible; /* Prevents glow clipping */
+      animation: splash-float 4s ease-in-out infinite;
+    }
+    @keyframes splash-float {
+      0%, 100% {
+        transform: translateY(0) scale(1);
+        filter: drop-shadow(0 4px 10px oklch(54.1% 0.247 293.0 / 0.3));
+      }
+      50% {
+        transform: translateY(-8px) scale(1.02);
+        filter: drop-shadow(0 15px 22px oklch(54.1% 0.247 293.0 / 0.6));
+      }
+    }
+
+    /* Base Gem Body: Fades in smoothly */
+    #gem-body {
+      opacity: 0;
+      animation: fade-in-base 1.2s ease-out forwards;
+    }
+    @keyframes fade-in-base {
+      to { opacity: 1; }
+    }
+
+    /* Inner skeletal lines: Draw themselves gracefully */
+    #splash-inner-lines polygon,
+    #splash-inner-lines line {
+      stroke-dasharray: 400;
+      stroke-dashoffset: 400;
+      animation: draw-lines 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
+    /* Staggering the drawing of each geometric line */
+    #splash-inner-lines polygon { animation-delay: 0.2s; }
+    #splash-inner-lines line:nth-of-type(1) { animation-delay: 0.4s; }
+    #splash-inner-lines line:nth-of-type(2) { animation-delay: 0.6s; }
+    #splash-inner-lines line:nth-of-type(3) { animation-delay: 0.8s; }
+    #splash-inner-lines line:nth-of-type(4) { animation-delay: 1.0s; }
+    #splash-inner-lines line:nth-of-type(5) { animation-delay: 1.2s; }
+    #splash-inner-lines line:nth-of-type(6) { animation-delay: 1.4s; }
+    #splash-inner-lines line:nth-of-type(7) { animation-delay: 1.6s; }
+
+    @keyframes draw-lines {
+      to { stroke-dashoffset: 0; }
+    }
+
+    /* Shadow Facets: Fade in after the skeletal lines are drawn */
+    .shadow-facet {
+      opacity: 0;
+      animation: fade-in-facet 1.5s ease-out forwards;
+    }
+    .shadow-facet:nth-child(1) { animation-delay: 1.0s; }
+    .shadow-facet:nth-child(2) { animation-delay: 1.3s; }
+    .shadow-facet:nth-child(3) { animation-delay: 1.6s; }
+
+    @keyframes fade-in-facet {
+      to { opacity: 1; } /* Parent `<g>` caps this to 0.35 */
+    }
+
+    /* Glow dots: Pop in sequentially, then pulse continuously */
+    #splash-dots circle {
+      transform-box: fill-box;
+      transform-origin: center;
+      opacity: 0;
+      animation:
+              pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards,
+              pulse-dot 2s ease-in-out infinite alternate;
+    }
+    /* 1st delay is the pop-in, 2nd delay offsets the continuous pulse */
+    #splash-dots circle:nth-child(1) { animation-delay: 0.4s, 2.0s; }
+    #splash-dots circle:nth-child(2) { animation-delay: 0.6s, 2.3s; }
+    #splash-dots circle:nth-child(3) { animation-delay: 0.8s, 2.6s; }
+    #splash-dots circle:nth-child(4) { animation-delay: 1.0s, 2.9s; }
+    #splash-dots circle:nth-child(5) { animation-delay: 1.2s, 3.2s; }
+    #splash-dots circle:nth-child(6) { animation-delay: 1.6s, 3.5s; } /* Bottom tip */
+
+    @keyframes pop-in {
+      0%   { opacity: 0; transform: scale(0); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    @keyframes pulse-dot {
+      0%   { transform: scale(0.8); opacity: 0.5; }
+      100% { transform: scale(1.3); opacity: 1; }
+    }
+
+    /* Top Highlight: Creates a breathing shimmer across the top of the gem */
+    #top-highlight {
+      opacity: 0;
+      animation: highlight-shimmer 4s ease-in-out infinite;
+      animation-delay: 2s;
+    }
+    @keyframes highlight-shimmer {
+      0%, 100% { opacity: 0.1; }
+      50%      { opacity: 0.45; }
+    }
+
+    /* App name */
+    #splash-title {
+      margin-top: 24px;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: oklch(49.1% 0.241 292.6); /* sapphire-700 */
+      letter-spacing: 0.05em;
+      opacity: 0;
+      animation: fade-up 1s ease-out 0.8s forwards;
+    }
+
+    /* Progress bar */
+    #splash-bar-track {
+      margin-top: 28px;
+      width: 180px;
+      height: 4px;
+      border-radius: 999px;
+      background: oklch(89.4% 0.055 293.3); /* sapphire-200 */
+      overflow: hidden;
+      opacity: 0;
+      animation: fade-up 1s ease-out 1.1s forwards;
+    }
+    #splash-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(
+              90deg,
+              oklch(54.1% 0.247 293.0),   /* sapphire-600 */
+              oklch(70.9% 0.159 293.5)    /* sapphire-400 */
+      );
+      width: 0%;
+      animation: splash-progress 2.5s cubic-bezier(0.4, 0, 0.2, 1) 1.2s forwards;
+    }
+
+    @keyframes fade-up {
+      0%   { opacity: 0; transform: translateY(12px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes splash-progress {
+      0%   { width: 0%; }
+      40%  { width: 45%; }
+      75%  { width: 85%; }
+      100% { width: 95%; } /* held — React will finish it */
+    }
+  </style>
+</head>
+<body>
+<!-- Splash screen (removed by main.tsx once React mounts) -->
+<div id="splash">
+  <svg id="splash-logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="s-glow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur result="coloredBlur" stdDeviation="2"/>
+        <feMerge>
+          <feMergeNode in="coloredBlur"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+      <radialGradient id="s-grad" cx="100" cy="102" r="90"
+                      gradientTransform="matrix(1 0 0 -1 0 202)" gradientUnits="userSpaceOnUse">
+        <stop offset="0"    stop-color="#00C6FF"/>
+        <stop offset="0.55" stop-color="#0F52BA"/>
+        <stop offset="1"    stop-color="#7B2CBF"/>
+      </radialGradient>
+    </defs>
+
+    <!-- Main gem body -->
+    <path id="gem-body" d="M70,25h60l55,55v40l-85,65l-85-65V80L70,25z"
+          fill="url(#s-grad)" stroke="#4B0082" stroke-width="0.8"/>
+
+    <!-- Shadow facets -->
+    <g opacity="0.35">
+      <path class="shadow-facet" d="M100,185l45-90c-15,11.7-30,23.3-45,35c-15-11.7-30-23.3-45-35L100,185z" fill="#9370DB"/>
+      <polygon class="shadow-facet" points="185,120 145,95 185,80" fill="#9370DB"/>
+      <polygon class="shadow-facet" points="15,120 55,95 15,80"   fill="#9370DB"/>
+    </g>
+
+    <!-- Inner skeletal lines — Animated to draw themselves -->
+    <g id="splash-inner-lines" opacity="0.8"
+       fill="none" stroke="#A88FEA" stroke-width="1.2"
+       stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="80,65 120,65 145,95 100,130 55,95"/>
+      <line x1="70"  y1="25"  x2="80"  y2="65"/>
+      <line x1="130" y1="25"  x2="120" y2="65"/>
+      <line x1="185" y1="80"  x2="145" y2="95"/>
+      <line x1="185" y1="120" x2="145" y2="95"/>
+      <line x1="15"  y1="80"  x2="55"  y2="95"/>
+      <line x1="15"  y1="120" x2="55"  y2="95"/>
+      <line x1="100" y1="185" x2="100" y2="130"/>
+    </g>
+
+    <!-- Top highlight glint -->
+    <path id="top-highlight" d="M70,25h60l-10,40H80L70,25z" fill="white" />
+
+    <!-- Glow dots — Pulse scale & opacity -->
+    <g id="splash-dots" filter="url(#s-glow)">
+      <circle cx="80"  cy="65"  r="3.5" fill="#E0FFFF"/>
+      <circle cx="120" cy="65"  r="3.5" fill="#E0FFFF"/>
+      <circle cx="145" cy="95"  r="3.5" fill="#E0FFFF"/>
+      <circle cx="55"  cy="95"  r="3.5" fill="#E0FFFF"/>
+      <circle cx="100" cy="130" r="3.5" fill="#E0FFFF"/>
+      <circle cx="100" cy="185" r="3.5" fill="white"/>
+    </g>
+  </svg>
+
+  <p id="splash-title">Sapphire CRM</p>
+
+  <div id="splash-bar-track">
+    <div id="splash-bar-fill"></div>
+  </div>
+</div>
+
+<div id="root"></div>
+<script type="module" src="/src/main.tsx"></script>
+</body>
+</html>

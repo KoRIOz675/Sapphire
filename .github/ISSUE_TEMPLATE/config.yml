@@ -1,0 +1,4 @@
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/KoRIOz675/Sapphire/blob/main/SECURITY.md
+    about: Please don't open a public issue for security problems; follow the security policy instead.

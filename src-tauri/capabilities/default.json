@@ -1,0 +1,71 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Default capabilities for the Sapphire CRM app",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "core:default",
+    "allow-list-persons",
+    "allow-get-person",
+    "allow-create-person",
+    "allow-update-person",
+    "allow-delete-person",
+    "allow-list-companies",
+    "allow-get-company",
+    "allow-create-company",
+    "allow-update-company",
+    "allow-delete-company",
+    "allow-list-actions",
+    "allow-get-action",
+    "allow-create-action",
+    "allow-update-action",
+    "allow-delete-action",
+    "allow-list-projects",
+    "allow-get-project",
+    "allow-create-project",
+    "allow-update-project",
+    "allow-delete-project",
+    "allow-dashboard-stats",
+    "allow-global-search",
+    "allow-export-csv",
+    "allow-export-json",
+    "allow-import-json",
+    "allow-get-setting",
+    "allow-set-setting",
+    "allow-get-db-path",
+    "allow-run-backup-now",
+    "allow-list-backups",
+    "allow-restore-from-backup",
+    "allow-get-custom-db-path",
+    "allow-choose-db-folder",
+    "allow-reset-db-path",
+    "allow-import-linkedin-csv",
+    "allow-list-tags",
+    "allow-create-tag",
+    "allow-update-tag",
+    "allow-delete-tag",
+    "allow-get-person-tags",
+    "allow-set-person-tags",
+    "allow-get-company-tags",
+    "allow-set-company-tags",
+    "allow-get-all-person-tag-ids",
+    "allow-get-all-company-tag-ids",
+    "allow-get-note",
+    "allow-upsert-note",
+    "allow-delete-note",
+    "allow-list-attachments",
+    "allow-add-attachment",
+    "allow-delete-attachment",
+    "allow-open-attachment",
+    {
+      "identifier": "opener:allow-open-url",
+      "allow": [
+        {
+          "url": "https://github.com/KoRIOz675/Sapphire/*"
+        }
+      ]
+    }
+  ]
+}

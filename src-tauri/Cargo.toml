@@ -1,0 +1,45 @@
+[package]
+name = "sapphire-crm"
+version = "0.1.0"
+description = "CRM desktop application"
+authors = ["NBI Project"]
+license = "Apache-2.0"
+repository = "https://github.com/KoRIOz675/Sapphire"
+edition = "2021"
+
+[lib]
+name = "sapphire_crm_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2.12", features = [] }
+tauri-plugin-dialog = "2.8"
+tauri-plugin-opener = "2.7"
+tauri-plugin-notification = "2"
+# Native message box for errors before the window exists. Keep the same version
+# as tauri-plugin-dialog uses, so only one copy is built, and name the Linux
+# backend explicitly rather than relying on the plugin's features.
+rfd = { version = "0.17", default-features = false, features = ["gtk3"] }
+
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+rusqlite = { version = "0.43", features = ["bundled", "backup", "functions"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+csv = "1.3"
+mime_guess = "2"
+unicode-normalization = "0.1.26"
+thiserror = "2"
+anyhow = "1"
+
+[dev-dependencies]
+tempfile = "3"
+
+[features]
+# This feature is used for production builds or when a dev server is not
+# specified; disable if you don't need it.
+custom-protocol = ["tauri/custom-protocol"]
