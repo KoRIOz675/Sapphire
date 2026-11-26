@@ -45,7 +45,14 @@ Job searching means juggling spreadsheets, sticky notes and email threads. Sapph
 
 ## Download
 
-Grab the installer for your platform from the [latest release](https://github.com/KoRIOz675/Sapphire/releases/latest): `.msi` or `.exe` for Windows, `.deb` or `.AppImage` for Linux. macOS isn't supported yet.
+These links always download the [latest release](https://github.com/KoRIOz675/Sapphire/releases/latest):
+
+| Platform | Download |
+| --- | --- |
+| Windows | [Sapphire.exe](https://github.com/KoRIOz675/Sapphire/releases/latest/download/Sapphire.exe) (installer, recommended) · [Sapphire.msi](https://github.com/KoRIOz675/Sapphire/releases/latest/download/Sapphire.msi) |
+| Linux | [Sapphire.AppImage](https://github.com/KoRIOz675/Sapphire/releases/latest/download/Sapphire.AppImage) (any distribution) · [Sapphire.deb](https://github.com/KoRIOz675/Sapphire/releases/latest/download/Sapphire.deb) (Debian / Ubuntu) |
+
+macOS isn't supported yet. To check a download, compare it with the `SHA256SUMS-Windows.txt` or `SHA256SUMS-Linux.txt` file of the release, or run `gh attestation verify <file> --repo KoRIOz675/Sapphire`.
 
 > [!NOTE]
 > Releases are not code-signed yet, so Windows SmartScreen may show a warning on first launch ("More info" → "Run anyway"). Code signing is on the [roadmap](#roadmap).

@@ -32,6 +32,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Full history and tags: the release notes link to a comparison
+          # with the previous release tag.
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -49,6 +53,28 @@ jobs:
             echo "Tag ${GITHUB_REF_NAME} does not match version v${version}" >&2
             exit 1
           fi
+
+      # Draft release notes come from .github/RELEASE_TEMPLATE.md. Only the
+      # placeholders are filled in here; the rest is written by hand before
+      # publishing the release.
+      - name: Prepare release notes
+        id: notes
+        shell: bash
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          previous=$(git describe --tags --abbrev=0 --match 'v*' "${GITHUB_REF_NAME}^" 2>/dev/null || true)
+          if [ -n "${previous}" ]; then
+            changelog="https://github.com/${GITHUB_REPOSITORY}/compare/${previous}...${GITHUB_REF_NAME}"
+          else
+            changelog="https://github.com/${GITHUB_REPOSITORY}/commits/${GITHUB_REF_NAME}"
+          fi
+          body=$(sed -e "s|{{VERSION}}|${version}|g" -e "s|{{CHANGELOG_URL}}|${changelog}|g" .github/RELEASE_TEMPLATE.md)
+          delimiter="NOTES_${RANDOM}${RANDOM}${RANDOM}"
+          {
+            echo "body<<${delimiter}"
+            echo "${body}"
+            echo "${delimiter}"
+          } >> "${GITHUB_OUTPUT}"
 
       # No build cache here: released binaries are always built from scratch.
       - name: Setup Rust stable
@@ -74,6 +100,13 @@ jobs:
       # Bundle targets come from tauri.conf.json (msi/nsis on Windows,
       # deb/appimage on Linux). Both matrix jobs upload to the same draft
       # release; publish it by hand once the notes are written.
+      #
+      # Assets are uploaded under stable names (Sapphire.exe, Sapphire.msi,
+      # Sapphire.deb, Sapphire.AppImage: product name + extension, no version
+      # or architecture), so links of the form
+      #   https://github.com/<owner>/<repo>/releases/latest/download/Sapphire.exe
+      # always point at the latest published release. The website and README
+      # rely on these names: changing them breaks their download links.
       - name: Build and upload to draft release
         id: tauri
         uses: tauri-apps/tauri-action@1deb371b0cd8bd54025b384f1cd735e725c4060f # v1.0.0
@@ -81,15 +114,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tagName: v__VERSION__
-          releaseName: Sapphire v__VERSION__
-          releaseBody: |
-            See the assets below to download Sapphire:
-
-            - **Windows:** `.msi` or `.exe` (setup)
-            - **Linux:** `.deb` (Debian/Ubuntu) or `.AppImage` (any distro)
-
-            Installers are not code-signed yet, so Windows SmartScreen may warn on first launch ("More info" → "Run anyway").
-            Check a download against the `SHA256SUMS-*.txt` file of its platform, or with `gh attestation verify <file> --repo KoRIOz675/Sapphire`.
+          releaseName: Sapphire version __VERSION__
+          releaseBody: ${{ steps.notes.outputs.body }}
+          releaseAssetNamePattern: "[name][ext]"
           releaseDraft: true
           prerelease: false
           args: -- --locked
@@ -103,7 +130,19 @@ jobs:
         run: |
           node -e '
             const fs = require("fs"), crypto = require("crypto"), path = require("path");
-            const files = JSON.parse(process.env.ARTIFACTS).filter((f) => fs.statSync(f).isFile());
+            // Checksums and attestations must use the same names as the
+            // uploaded assets (releaseAssetNamePattern "[name][ext]" above),
+            // so copy each built file to <productName><extension> first.
+            const product = JSON.parse(fs.readFileSync("src-tauri/tauri.conf.json", "utf8")).productName;
+            fs.mkdirSync("release-assets", { recursive: true });
+            const files = JSON.parse(process.env.ARTIFACTS)
+              .filter((f) => fs.statSync(f).isFile())
+              .map((f) => {
+                const dest = path.join("release-assets", product + path.extname(f));
+                if (fs.existsSync(dest)) throw new Error("Two build outputs would both be named " + path.basename(dest));
+                fs.copyFileSync(f, dest);
+                return dest;
+              });
             const sums = files.map((f) =>
               crypto.createHash("sha256").update(fs.readFileSync(f)).digest("hex") + "  " + path.basename(f));
             fs.writeFileSync(`SHA256SUMS-${process.env.PLATFORM}.txt`, sums.join("\n") + "\n");
