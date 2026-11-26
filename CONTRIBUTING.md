@@ -194,7 +194,11 @@ The name and logo "Sapphire" and "NBI Project" are not covered by the license (s
 Two GitHub Actions workflows live in `.github/workflows/`:
 
 - **`ci.yml`** runs on every pull request and on pushes to `main`: type-check and Vite build, `cargo fmt --check`, `cargo clippy -D warnings`, `cargo test`.
-- **`release.yml`** runs on tags matching `v*` (or manually via `workflow_dispatch`). It builds with `tauri-apps/tauri-action` for Windows x64 (`.msi`, NSIS `.exe`) and Linux x64 (`.deb`, `.AppImage`), and attaches the artefacts to a **draft** GitHub Release. No secrets are needed beyond the built-in `GITHUB_TOKEN`.
+- **`release.yml`** runs on tags matching `v*` (or manually via `workflow_dispatch`). It builds with `tauri-apps/tauri-action` for Windows x64 (`.msi`, NSIS `.exe`) and Linux x64 (`.deb`, `.AppImage`), and attaches the artefacts to a **draft** GitHub Release titled "Sapphire version X.Y.Z". No secrets are needed beyond the built-in `GITHUB_TOKEN`.
+
+Release assets always have the same names, with no version or architecture: `Sapphire.exe`, `Sapphire.msi`, `Sapphire.deb`, `Sapphire.AppImage`, plus `SHA256SUMS-Windows.txt` and `SHA256SUMS-Linux.txt`. That keeps links like `https://github.com/KoRIOz675/Sapphire/releases/latest/download/Sapphire.exe` pointing at the latest published release, so the README and [nbi-project.fr](https://nbi-project.fr/) never need updating for a new version. Don't rename them: it would break those links. Only one architecture is built per platform, and pre-releases aren't used (a pre-release is never "latest").
+
+The draft's description is pre-filled from [`.github/RELEASE_TEMPLATE.md`](.github/RELEASE_TEMPLATE.md) (version and changelog link filled in automatically). Edit that file to change the template.
 
 To publish a new version:
 
@@ -208,4 +212,4 @@ git tag v0.2.0
 git push origin main --tags
 ```
 
-When the workflow finishes, edit the release notes and switch the release from **Draft** to **Published**.
+When the workflow finishes **for both platforms**, fill in the release notes from the template (delete empty sections) and switch the release from **Draft** to **Published**, keeping "Set as the latest release" ticked. Publishing before both builds have uploaded their files would briefly break the `latest/download` links. Only the latest version is maintained: a fix is always shipped as a new patch version, which becomes the latest release.
