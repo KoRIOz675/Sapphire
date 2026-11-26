@@ -241,7 +241,7 @@
   },
   "guide": {
     "title": "User Guide",
-    "intro": "Sapphire is a local-first CRM designed to help you manage your professional network during a job search. All data is stored on your device.",
+    "intro": "Sapphire is a local-first networking CRM that helps you manage your professional network: contacts, companies, and every interaction. All data is stored on your device.",
     "section_people": "People",
     "section_people_desc": "Add and manage your contacts. Each person can be assigned a circle of relation (1 = closest, 4 = outer network), a company, tags, notes, and attachments.",
     "section_circles": "Circles of Relation",
@@ -251,7 +251,7 @@
     "section_actions": "Actions",
     "section_actions_desc": "Log every interaction: phone calls, emails, LinkedIn messages, meetings, etc. Actions are linked to one or more contacts and have a status (To do / In progress / Done). Use the Calendar view to see upcoming actions.",
     "section_projects": "Projects",
-    "section_projects_desc": "Group your job applications or campaigns under projects. A project can be linked to one or more target companies.",
+    "section_projects_desc": "Group your campaigns under projects, such as a job search, a sales prospecting effort, or a set of target clients. A project can be linked to one or more target companies.",
     "section_tags": "Tags",
     "section_tags_desc": "Tags can be applied to people and companies for quick filtering. Create tags with a custom color directly from the People or Company detail pages.",
     "section_dashboard": "Dashboard",
