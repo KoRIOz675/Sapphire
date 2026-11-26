@@ -5,7 +5,7 @@
 <h1 align="center">Sapphire</h1>
 
 <p align="center">
-  <strong>A free, local-first CRM for your job search.</strong><br/>
+  <strong>A free, local-first networking CRM.</strong><br/>
   Your contacts, companies and follow-ups in one place. Your data never leaves your machine.
 </p>
 
@@ -29,14 +29,14 @@
 
 ## Why Sapphire?
 
-Job searching means juggling spreadsheets, sticky notes and email threads. Sapphire gives you one structured place for the people you know, the companies you target, every interaction you have, and the campaigns you run. Everything is stored in a local SQLite database: no account, no cloud, no tracking. Sapphire works fully offline; the only network request it can make is an optional update check, off by default.
+Keeping up with your professional network means juggling spreadsheets, sticky notes and email threads. Whether you're growing a client base, searching for your next role, or just staying in touch with the people who matter professionally, Sapphire gives you one structured place for the people you know, the companies you target, every interaction you have, and the campaigns you run. Everything is stored in a local SQLite database: no account, no cloud, no tracking. Sapphire works fully offline; the only network request it can make is an optional update check, off by default.
 
 ## Features
 
 - **People:** contacts with role, emails, phone, circle of relation (1-4), manager and referral sources
 - **Companies:** sector, size, priority, parent-company relationships
 - **Actions:** log calls, meetings and emails with preparation and conclusion notes; list view and Kanban board; native reminders
-- **Projects:** group companies into job-search campaigns
+- **Projects:** group target companies into campaigns, such as a job search or a sales prospecting effort
 - **Dashboard and Calendar:** upcoming follow-ups and an 84-day activity chart at a glance
 - **Global search:** `Ctrl+K` / `Cmd+K` across everything
 - **Notes and attachments:** rich-text notes and local file attachments
