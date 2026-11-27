@@ -50,7 +50,19 @@ These links always download the [latest release](https://github.com/KoRIOz675/Sa
 | Platform | Download |
 | --- | --- |
 | Windows | [Sapphire.exe](https://github.com/KoRIOz675/Sapphire/releases/latest/download/Sapphire.exe) (installer, recommended) · [Sapphire.msi](https://github.com/KoRIOz675/Sapphire/releases/latest/download/Sapphire.msi) |
-| Linux | [Sapphire.AppImage](https://github.com/KoRIOz675/Sapphire/releases/latest/download/Sapphire.AppImage) (any distribution) · [Sapphire.deb](https://github.com/KoRIOz675/Sapphire/releases/latest/download/Sapphire.deb) (Debian / Ubuntu) |
+| Linux | [Sapphire.AppImage](https://github.com/KoRIOz675/Sapphire/releases/latest/download/Sapphire.AppImage) (any distribution) · [Sapphire.deb](https://github.com/KoRIOz675/Sapphire/releases/latest/download/Sapphire.deb) (Debian / Ubuntu) · [Sapphire.rpm](https://github.com/KoRIOz675/Sapphire/releases/latest/download/Sapphire.rpm) (Fedora) |
+
+### Supported systems
+
+| System | Minimum version | Installer |
+| --- | --- | --- |
+| Windows | Windows 10 (64-bit) | `Sapphire.exe` or `Sapphire.msi` |
+| Ubuntu | 24.04 LTS | `Sapphire.deb` or `Sapphire.AppImage` |
+| Debian | 13 (trixie) | `Sapphire.deb` or `Sapphire.AppImage` |
+| Fedora | 44 | `Sapphire.rpm` or `Sapphire.AppImage` |
+| Other Linux (x64) | glibc 2.39 or later | `Sapphire.AppImage` |
+
+Linux builds need glibc 2.39 or later, so Ubuntu 22.04, Debian 12 and RHEL / AlmaLinux / Rocky 9 aren't supported. Distributions based on a supported release (Linux Mint 22, Pop!_OS 24.04…) should work with the same installer. On Windows, the installer downloads Microsoft Edge WebView2 if it's missing.
 
 macOS isn't supported yet. To check a download, compare it with the `SHA256SUMS-Windows.txt` or `SHA256SUMS-Linux.txt` file of the release, or run `gh attestation verify <file> --repo KoRIOz675/Sapphire`.
 

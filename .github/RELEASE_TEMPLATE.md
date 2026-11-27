@@ -23,9 +23,9 @@
 | Platform | File |
 | --- | --- |
 | Windows | [Sapphire.exe](https://github.com/KoRIOz675/Sapphire/releases/download/v{{VERSION}}/Sapphire.exe) (installer, recommended) · [Sapphire.msi](https://github.com/KoRIOz675/Sapphire/releases/download/v{{VERSION}}/Sapphire.msi) |
-| Linux | [Sapphire.AppImage](https://github.com/KoRIOz675/Sapphire/releases/download/v{{VERSION}}/Sapphire.AppImage) (any distribution) · [Sapphire.deb](https://github.com/KoRIOz675/Sapphire/releases/download/v{{VERSION}}/Sapphire.deb) (Debian / Ubuntu) |
+| Linux | [Sapphire.AppImage](https://github.com/KoRIOz675/Sapphire/releases/download/v{{VERSION}}/Sapphire.AppImage) (any distribution) · [Sapphire.deb](https://github.com/KoRIOz675/Sapphire/releases/download/v{{VERSION}}/Sapphire.deb) (Debian / Ubuntu) · [Sapphire.rpm](https://github.com/KoRIOz675/Sapphire/releases/download/v{{VERSION}}/Sapphire.rpm) (Fedora) |
 
-macOS isn't supported yet.
+Linux packages need glibc 2.39 or later (Ubuntu 24.04, Debian 13, Fedora 44 or newer). macOS isn't supported yet.
 
 **Note:** installers aren't code-signed yet, so Windows SmartScreen may warn on first launch: click **More info**, then **Run anyway**.
 

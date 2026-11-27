@@ -68,16 +68,16 @@ The first launch can take several minutes while Rust compiles all dependencies. 
 npm run tauri build
 ```
 
-Installers are generated in `src-tauri/target/release/bundle/` (`.msi`/`.exe` on Windows, `.deb`/`.AppImage` on Linux). Sapphire is built and tested on Windows and Linux; macOS may work from source but isn't supported yet.
+Installers are generated in `src-tauri/target/release/bundle/` (`.msi`/`.exe` on Windows, `.deb`/`.rpm`/`.AppImage` on Linux). Sapphire is built and tested on Windows and Linux; macOS may work from source but isn't supported yet.
 
 ### Where your dev data lives
 
 By default the SQLite database is stored in the user config directory:
 
-| OS      | Path                                                  |
-| ------- | ----------------------------------------------------- |
-| Windows | `%APPDATA%\fr.nbiproject.sapphire\sapphire.db`        |
-| Linux   | `~/.config/fr.nbiproject.sapphire/sapphire.db`        |
+| OS      | Path                                                   |
+| ------- | ------------------------------------------------------ |
+| Windows | `%APPDATA%\io.github.korioz675.Sapphire\sapphire.db` |
+| Linux   | `~/.config/io.github.korioz675.Sapphire/sapphire.db`   |
 
 The database location can be changed in Settings. Automatic backups always go to a `backups/` folder next to the database file. When testing destructive changes or migrations, **back up or point the app at a throwaway database first**.
 
@@ -225,9 +225,9 @@ The name and logo "Sapphire" and "NBI Project" are not covered by the license (s
 Two GitHub Actions workflows live in `.github/workflows/`:
 
 - **`ci.yml`** runs on every pull request and on pushes to `main`: type-check and Vite build, `cargo fmt --check`, `cargo clippy -D warnings`, `cargo test`.
-- **`release.yml`** runs on tags matching `v*` (or manually via `workflow_dispatch`). It builds with `tauri-apps/tauri-action` for Windows x64 (`.msi`, NSIS `.exe`) and Linux x64 (`.deb`, `.AppImage`), and attaches the artefacts to a **draft** GitHub Release titled "Sapphire version X.Y.Z". No secrets are needed beyond the built-in `GITHUB_TOKEN`.
+- **`release.yml`** runs on tags matching `v*` (or manually via `workflow_dispatch`). It builds with `tauri-apps/tauri-action` for Windows x64 (`.msi`, NSIS `.exe`) and Linux x64 (`.deb`, `.rpm`, `.AppImage`, built on `ubuntu-24.04`, so they need glibc 2.39 or later), and attaches the artefacts to a **draft** GitHub Release titled "Sapphire version X.Y.Z". No secrets are needed beyond the built-in `GITHUB_TOKEN`.
 
-Release assets always have the same names, with no version or architecture: `Sapphire.exe`, `Sapphire.msi`, `Sapphire.deb`, `Sapphire.AppImage`, plus `SHA256SUMS-Windows.txt` and `SHA256SUMS-Linux.txt`. That keeps links like `https://github.com/KoRIOz675/Sapphire/releases/latest/download/Sapphire.exe` pointing at the latest published release, so the README and [nbi-project.fr](https://nbi-project.fr/) never need updating for a new version. Don't rename them: it would break those links. Only one architecture is built per platform, and pre-releases aren't used (a pre-release is never "latest").
+Release assets always have the same names, with no version or architecture: `Sapphire.exe`, `Sapphire.msi`, `Sapphire.deb`, `Sapphire.rpm`, `Sapphire.AppImage`, plus `SHA256SUMS-Windows.txt` and `SHA256SUMS-Linux.txt`. That keeps links like `https://github.com/KoRIOz675/Sapphire/releases/latest/download/Sapphire.exe` pointing at the latest published release, so the README and [nbi-project.fr](https://nbi-project.fr/) never need updating for a new version. Don't rename them: it would break those links. Only one architecture is built per platform, and pre-releases aren't used (a pre-release is never "latest").
 
 The draft's description is pre-filled from [`.github/RELEASE_TEMPLATE.md`](.github/RELEASE_TEMPLATE.md) (version and changelog link filled in automatically). Edit that file to change the template.
 
