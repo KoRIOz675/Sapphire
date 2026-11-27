@@ -23,9 +23,12 @@ jobs:
           - name: Windows x64
             os: windows-latest
           - name: Linux x64
-            # Oldest supported LTS runner: AppImages built against a newer
-            # glibc don't start on older distros.
-            os: ubuntu-22.04
+            # Linux packages only run on distros whose glibc is at least the
+            # runner's: glibc 2.39 on ubuntu-24.04 (Ubuntu 24.04+, Debian 13+,
+            # Fedora 40+). ubuntu-22.04 runners are deprecated and are removed
+            # on 2027-04-17. Update the README's supported-systems table when
+            # this changes.
+            os: ubuntu-24.04
 
     runs-on: ${{ matrix.platform.os }}
 
@@ -98,12 +101,13 @@ jobs:
         run: npm ci
 
       # Bundle targets come from tauri.conf.json (msi/nsis on Windows,
-      # deb/appimage on Linux). Both matrix jobs upload to the same draft
+      # deb/appimage/rpm on Linux). The .rpm is written by the bundler itself
+      # (no rpmbuild needed). Both matrix jobs upload to the same draft
       # release; publish it by hand once the notes are written.
       #
       # Assets are uploaded under stable names (Sapphire.exe, Sapphire.msi,
-      # Sapphire.deb, Sapphire.AppImage: product name + extension, no version
-      # or architecture), so links of the form
+      # Sapphire.deb, Sapphire.rpm, Sapphire.AppImage: product name +
+      # extension, no version or architecture), so links of the form
       #   https://github.com/<owner>/<repo>/releases/latest/download/Sapphire.exe
       # always point at the latest published release. The website and README
       # rely on these names: changing them breaks their download links.

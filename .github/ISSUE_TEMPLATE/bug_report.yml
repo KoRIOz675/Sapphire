@@ -69,6 +69,7 @@ body:
         - Windows installer (.msi)
         - Windows setup (.exe)
         - Debian/Ubuntu package (.deb)
+        - Fedora package (.rpm)
         - AppImage
         - Built from source
     validations:

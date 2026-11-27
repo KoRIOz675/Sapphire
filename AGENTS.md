@@ -11,7 +11,7 @@ Sapphire is a free, open-source (Apache-2.0), **local-first networking CRM** for
 - **No account, no server, no telemetry.** The app's only network request is an opt-in, read-only update check against the public GitHub Releases API (`src/api/updates.ts`). It is off by default.
 - **Platforms:** Windows and Linux. macOS isn't supported yet.
 - **Interface language:** English only, but every string still goes through i18next.
-- **App identifier:** `fr.nbiproject.sapphire`. Dev and release builds store data in `~/.config/fr.nbiproject.sapphire/` (Linux) or `%APPDATA%\fr.nbiproject.sapphire\` (Windows).
+- **App identifier:** `io.github.korioz675.Sapphire` (case-sensitive; it was `fr.nbiproject.sapphire` up to 1.0.1, with no data migration). Dev and release builds store data in `~/.config/io.github.korioz675.Sapphire/` (Linux) or `%APPDATA%\io.github.korioz675.Sapphire\` (Windows).
 
 ## Tech stack
 
@@ -116,7 +116,7 @@ Run `npm run build` at least once before `cargo` commands in a fresh checkout: `
 ### Hard stops: never do these without explicit approval from the human
 
 - **Commit, push, or open pull requests.** Leave your changes uncommitted in the working tree; the human reviews and commits them.
-- **Bump the version or touch releases.** That covers the `version` in `package.json`, `src-tauri/Cargo.toml` and `src-tauri/tauri.conf.json`, git tags, `.github/workflows/release.yml`, `.github/RELEASE_TEMPLATE.md`, and the release asset names (`Sapphire.exe`, `.msi`, `.deb`, `.AppImage`, `SHA256SUMS-*.txt`; public download links depend on them).
+- **Bump the version or touch releases.** That covers the `version` in `package.json`, `src-tauri/Cargo.toml` and `src-tauri/tauri.conf.json`, git tags, `.github/workflows/release.yml`, `.github/RELEASE_TEMPLATE.md`, and the release asset names (`Sapphire.exe`, `.msi`, `.deb`, `.rpm`, `.AppImage`, `SHA256SUMS-*.txt`; public download links depend on them).
 - **Add dependencies or network access.** No new npm or Cargo dependencies, no new outbound requests, no widening of the CSP in `tauri.conf.json` or of the capabilities in `capabilities/default.json` (for example new `opener` URLs or plugin permissions).
 - **Edit a shipped migration or `schema.sql`.** Schema changes go in a new numbered migration. Existing user databases must keep working.
 
@@ -125,7 +125,7 @@ If a task seems to need one of these, stop and ask.
 ### Product principles
 
 - **Local-first and private.** No accounts, analytics, telemetry, crash reporting or cloud sync. User data never leaves the machine.
-- **Never touch real user data.** Don't open, copy or modify the real database in `~/.config/fr.nbiproject.sapphire/` (or `%APPDATA%`). For runtime testing, point the app at throwaway directories, for example by setting `XDG_CONFIG_HOME`, `XDG_DATA_HOME` and `XDG_CACHE_HOME` to a temp folder on Linux. Never commit `*.db` files or backups.
+- **Never touch real user data.** Don't open, copy or modify the real database in `~/.config/io.github.korioz675.Sapphire/` (or `%APPDATA%`). For runtime testing, point the app at throwaway directories, for example by setting `XDG_CONFIG_HOME`, `XDG_DATA_HOME` and `XDG_CACHE_HOME` to a temp folder on Linux. Never commit `*.db` files or backups.
 
 ### Security conventions
 
