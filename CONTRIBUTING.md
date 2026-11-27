@@ -12,9 +12,10 @@ By participating, you agree to follow our [Code of Conduct](./CODE_OF_CONDUCT.md
 - [Development setup](#development-setup)
 - [Project structure](#project-structure)
 - [Making changes](#making-changes)
-- [Adding a translation](#adding-a-translation)
+- [UI text](#ui-text)
+- [Using AI tools](#using-ai-tools)
 - [Pull request checklist](#pull-request-checklist)
-- [Licensing and sign-off](#licensing-and-sign-off)
+- [Licensing](#licensing)
 - [Maintainer notes: releases](#maintainer-notes-releases)
 
 ## Ways to contribute
@@ -85,8 +86,11 @@ The database location can be changed in Settings. Automatic backups always go to
 ```
 Sapphire/
 ├── src/                  # Frontend: React + TypeScript
-│   ├── api/              # Typed client for the Tauri commands
+│   ├── api/              # Typed client for the Tauri commands, update check
 │   ├── components/       # Reusable components
+│   ├── context/          # React contexts (keyboard shortcuts)
+│   ├── hooks.ts          # TanStack Query hooks over the API client
+│   ├── hooks/            # Other React hooks
 │   ├── pages/            # App pages
 │   ├── locales/          # UI text (en.json)
 │   ├── i18n.ts           # i18next configuration
@@ -98,13 +102,20 @@ Sapphire/
     ├── src/
     │   ├── main.rs       # Binary entry point
     │   ├── lib.rs        # App setup + command registration
+    │   ├── startup.rs    # Opens the database at launch, recovery if it fails
     │   ├── db.rs         # Opens the database and runs migrations
     │   ├── migrations/   # Numbered schema migrations
     │   ├── models.rs     # Structs mirroring the tables
     │   ├── commands/     # Handlers exposed to React via invoke()
+    │   ├── error.rs      # Error type returned to the frontend
     │   ├── backup.rs     # Automatic backups
     │   ├── reminder.rs   # Background thread for native reminders
+    │   ├── dialogs.rs    # Native file dialogs, opened from Rust
+    │   ├── navigation.rs # Keeps the window on app pages, opens links in the browser
+    │   ├── test_util.rs  # Helpers for unit tests
     │   └── schema.sql    # Baseline database schema
+    ├── build.rs          # Declares the app commands for Tauri's permission system
+    ├── capabilities/     # Which commands the window may call
     ├── Cargo.toml
     └── tauri.conf.json
 ```
@@ -125,6 +136,7 @@ CI runs these on every pull request, so run them locally first:
 ```bash
 # Frontend
 npx tsc --noEmit
+npm test          # runs tests/*.test.ts with Node's test runner
 npm run build
 
 # Backend (from src-tauri/)
@@ -133,21 +145,32 @@ cargo clippy --all-targets -- -D warnings
 cargo test
 ```
 
+Run `npm run build` before the `cargo` commands in a fresh checkout: the Rust build needs the `dist/` folder it produces.
+
 ### Typical change: adding or changing a backend feature
 
 A feature that touches data usually involves the whole stack:
 
 1. **Schema:** add a numbered migration in `src-tauri/src/migrations/mod.rs` (don't edit `schema.sql`). Never edit a migration that has already shipped.
 2. **Model:** update the struct in `models.rs`.
-3. **Command:** add or update the handler in `src-tauri/src/commands/` and register it in `lib.rs`.
-4. **Types:** mirror the change in `src/types.ts`.
-5. **API client:** expose the command in `src/api/`.
-6. **UI:** use it from a page or component, with translated strings (see below).
-7. **Tests:** add a Rust test for the backend logic where practical.
+3. **Command:** add or update the handler in `src-tauri/src/commands/`.
+4. **Registration:** a new command must be listed in three places, or the frontend can't call it:
+   - `tauri::generate_handler![...]` in `src-tauri/src/lib.rs`
+   - the command list in `src-tauri/build.rs`
+   - `"allow-<command-name>"` (kebab-case) in `src-tauri/capabilities/default.json`
+5. **Types:** mirror the change in `src/types.ts`.
+6. **API client:** expose the command in `src/api/tauri.ts`, and add a hook in `src/hooks.ts` if pages use it.
+7. **UI:** use it from a page or component, with strings in `en.json` (see below).
+8. **Tests:** add a Rust test for the backend logic where practical (`test_util::memory_db()` gives you a migrated in-memory database).
 
 ### Conventions
 
-- **Commit messages:** [Conventional Commits](https://www.conventionalcommits.org/) style (`feat:`, `fix:`, `docs:`, `refactor:`, `chore:`).
+- **Commit messages:** `SEVERITY: type: subject`, for example `MINOR: fix: correct reminder time in calendar view`. `type` follows [Conventional Commits](https://www.conventionalcommits.org/) (`feat`, `fix`, `docs`, `refactor`, `chore`, `ci`, `test`). `SEVERITY` is the impact on users:
+  - `MINOR`: docs, wording, small fixes; little risk of changing behaviour
+  - `MEDIUM`: new features, behaviour changes, CI or build changes
+  - `CRITICAL`: database migrations or data handling, security fixes, breaking changes, repo-wide restructuring
+
+  Pull request titles use the same format.
 - **Rust:** formatted with `cargo fmt`, no Clippy warnings.
 - **TypeScript:** strict typing, no `any` unless justified in a comment.
 - **No hard-coded UI strings:** every user-facing string goes through i18next.
@@ -165,6 +188,22 @@ Sapphire's interface is English only. Text goes through [i18next](https://www.i1
 
 If you'd rather not touch the code, open an issue titled "Translation: <language>" and attach the translated file; we'll wire it up.
 
+## Using AI tools
+
+You can use AI assistants (Copilot, ChatGPT, Claude, Cursor, Codex, etc.) to contribute, and you don't need to disclose it. One rule applies, though:
+
+**Even if the code is written by AI, you, as a human, should be able to understand and explain it at any time.**
+
+You are the author of what you submit. Before opening a pull request, read every line, make sure you know what it does and why it's there, and check that it matches the conventions in this file. A reviewer may ask you to explain any part of your change; "the AI wrote it" isn't an answer, and a pull request whose author can't explain it will be closed.
+
+In practice:
+
+- Keep AI-assisted changes small enough to review properly.
+- Run the [checks](#checks-your-code-must-pass) yourself and look at the result, rather than trusting the assistant's word that they pass.
+- Don't add AI co-author trailers (such as `Co-Authored-By`) to your commits.
+
+Agents working on this repo should follow [AGENTS.md](./AGENTS.md), which summarises the project structure and the rules they must respect.
+
 ## Pull request checklist
 
 - [ ] The PR is focused on one change, and linked to an issue if there is one
@@ -173,19 +212,11 @@ If you'd rather not touch the code, open an issue titled "Translation: <language
 - [ ] Database changes include a migration, and existing databases keep working
 - [ ] Screenshots are included for UI changes
 - [ ] Docs and the README are updated if behaviour changed
-- [ ] Commits are signed off (see below)
+- [ ] You understand every line of the change and can explain it, including any AI-generated code
 
-## Licensing and sign-off
+## Licensing
 
-Sapphire is licensed under the [Apache License 2.0](./LICENSE). By contributing, you agree that your contribution is licensed under the same terms (section 5 of the license).
-
-We use the [Developer Certificate of Origin](https://developercertificate.org/) (DCO). Certify that you wrote the code, or have the right to submit it, by signing off each commit:
-
-```bash
-git commit -s -m "fix: correct reminder time in calendar view"
-```
-
-This adds a `Signed-off-by: Your Name <you@example.com>` line to the commit message. Pull requests with unsigned commits can't be merged; `git rebase --signoff main` fixes existing commits.
+Sapphire is licensed under the [Apache License 2.0](./LICENSE). By contributing, you agree that your contribution is licensed under the same terms (section 5 of the license), and you confirm that you have the right to submit it.
 
 The name and logo "Sapphire" and "NBI Project" are not covered by the license (see [NOTICE](./NOTICE)); please don't use them to name a fork or imply endorsement.
 
@@ -206,7 +237,7 @@ To publish a new version:
 # 1. Bump the version in package.json, src-tauri/Cargo.toml and src-tauri/tauri.conf.json
 #    (then run `npm install` and `cargo check` so both lockfiles follow)
 # 2. Commit
-git commit -am "release: v0.2.0"
+git commit -am "MEDIUM: chore: release v0.2.0"
 # 3. Tag and push
 git tag v0.2.0
 git push origin main --tags
